@@ -14,4 +14,13 @@ class HomeController extends Controller {
 
 	}
 
+	public function test() {
+		echo "Action test";
+	}
+
+	public function testParam($param) {
+		echo "Action testParam";
+		echo "<br> Param: ".$param;
+	}
+
 }

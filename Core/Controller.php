@@ -40,7 +40,7 @@ class Controller {
 
 		header('Content-Type: application/json');
 
-		return json_encode($array);
+		echo json_encode($array);
 
 		exit;
 	}

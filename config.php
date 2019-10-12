@@ -4,13 +4,13 @@ require 'environment.php';
 $config = array();
 if(ENVIRONMENT == 'development') {
 	define("BASE_URL", "http://localhost/psr/psr-4-mvc/");
-	$config['dbname'] = 'mvc_psr4';
+	$config['dbname'] = 'devstagram';
 	$config['host'] = 'localhost';
 	$config['dbuser'] = 'root';
 	$config['dbpass'] = '';
 } else {
 	define("BASE_URL", "http://localhost/psr/psr-4-mvc/");
-	$config['dbname'] = 'mvc_psr4';
+	$config['dbname'] = 'devstagram';
 	$config['host'] = 'localhost';
 	$config['dbuser'] = 'root';
 	$config['dbpass'] = 'root';

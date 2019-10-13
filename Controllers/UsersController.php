@@ -21,10 +21,11 @@ class UsersController extends Controller {
 				
 				$users = new Users();
 
+				$data['pass'] = addslashes($data['pass']);
+
 				if($users->checkCredentials($data['email'], $data['pass'])) {
 
-					$array['error'] = '';
-					$array['jwt'] = '...';
+					$array['jwt'] = $users->createJwt();
 					
 				} else {
 					$array['error'] = 'Acesso Negado!!!';
@@ -39,7 +40,5 @@ class UsersController extends Controller {
 
 		$this->returnJson($array);
 	}
-
-	
 
 }

@@ -4,14 +4,14 @@ require 'environment.php';
 global $config;
 $config = array();
 if(ENVIRONMENT == 'development') {
-	define("BASE_URL", "http://localhost/psr/psr-4-mvc/");
+	define("BASE_URL", "http://localhost/devstagram/");
 	$config['dbname'] = 'devstagram';
 	$config['host'] = 'localhost';
 	$config['dbuser'] = 'root';
 	$config['dbpass'] = '';
 	$config['jwt_secret_key'] = 'abcd12345';
 } else {
-	define("BASE_URL", "http://localhost/psr/psr-4-mvc/");
+	define("BASE_URL", "http://localhost/devstagram/");
 	$config['dbname'] = 'devstagram';
 	$config['host'] = 'localhost';
 	$config['dbuser'] = 'root';

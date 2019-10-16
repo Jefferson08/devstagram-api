@@ -41,6 +41,49 @@ class UsersController extends Controller {
 		$this->returnJson($array);
 	}
 
+	public function view($id) {
+
+		$array = array('error' => '');
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+			$array['is_me'] = false;
+
+			if ($id == $users->getId()) {
+				$array['is_me'] = true;
+			}
+
+			switch ($method) {
+				case 'GET':
+					
+					$array['data'] = $users->getInfo($id);
+
+					break;
+				case 'PUT':
+					# code...
+					break;
+				case 'DELETE':
+					# code...
+					break;
+				default:
+					$array['error'] = 'Invalid request '.$method.' method';
+					break;
+			}
+
+
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);
+	}
+
 	public function new_record() {
 
 		$array = array('error' => '');

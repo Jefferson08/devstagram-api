@@ -36,6 +36,59 @@ class Users extends Model {
 		}
 	}
 
+	public function editInfo($id, $data) {
+
+		if ($id === $this->getId()) {
+			
+			$changes = array();
+
+			if(!empty($data['name'])){
+				$changes['name'] = $data['name'];
+			}
+
+			if (!empty($data['email'])) {
+				if (filter_var($data['email'], FILTER_VALIDATE_EMAIL) && !$this->emailExists($data['email'])) {
+					$changes['email'] = $data['email'];
+				} else {
+					return 'Email inválido ou já existente!';
+				}
+			}
+
+			if (!empty($data['pass'])) {
+				$changes['pass'] = password_hash($data['pass'], PASSWORD_DEFAULT);
+			}
+
+			if (count($changes) > 0) {
+
+				$fields = array();
+
+				foreach ($changes as $key => $value) {
+					array_push($fields, $key.' = :'.$key);
+				}
+				
+				$sql = "UPDATE users SET ".implode(', ', $fields)." WHERE id_user = :id";
+
+				$sql = $this->db->prepare($sql);
+				$sql->bindValue(':id', $id);
+
+				foreach ($changes as $key => $value) {
+					$sql->bindValue(':'.$key, $value);
+				}
+
+				$sql->execute();
+
+				return '';
+
+			} else {
+				return 'Preencha os dados corretamente!';
+			}
+
+		} else {
+			return 'Você não pode alterar outro usuário!';
+		}
+
+	} 
+
 	public function getInfo($id_user) {
 
 		$array = array();
@@ -117,7 +170,7 @@ class Users extends Model {
 
 	public function emailExists($email) {
 
-		$sql = "SELECT id FROM users WHERE email = :email";
+		$sql = "SELECT id_user FROM users WHERE email = :email";
 		$sql = $this->db->prepare($sql);
 		$sql->bindValue(':email', $email);
 		$sql->execute();

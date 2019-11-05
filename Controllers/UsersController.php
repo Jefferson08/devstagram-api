@@ -64,9 +64,15 @@ class UsersController extends Controller {
 					
 					$array['data'] = $users->getInfo($id);
 
+					if (count($array['data']) === 0) {
+						$array['error'] = 'Usuário não encontrado!!!';
+					}
+
 					break;
 				case 'PUT':
-					# code...
+					
+					$array['error'] = $users->editInfo($id, $data);
+
 					break;
 				case 'DELETE':
 					# code...

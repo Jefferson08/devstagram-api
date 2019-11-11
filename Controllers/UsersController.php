@@ -55,7 +55,7 @@ class UsersController extends Controller {
 			$array['logged'] = true;
 			$array['is_me'] = false;
 
-			if ($id == $users->getId()) {
+			if ($id === $users->getId()) {
 				$array['is_me'] = true;
 			}
 
@@ -75,7 +75,15 @@ class UsersController extends Controller {
 
 					break;
 				case 'DELETE':
-					# code...
+
+					$array['data'] = $users->getInfo($id);
+
+					if (count($array['data']) === 0) {
+						$array['error'] = 'Usuário não encontrado!!!';
+					} else {
+						$array['error'] = $users->deleteUser($id);
+					}
+
 					break;
 				default:
 					$array['error'] = 'Invalid request '.$method.' method';

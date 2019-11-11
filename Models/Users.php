@@ -89,6 +89,32 @@ class Users extends Model {
 
 	} 
 
+	public function deleteUser($id_user) {
+
+		if ($id_user === $this->getId()) {
+			
+			$p = new Photos();
+
+			$p->deleteAll($id_user);
+
+			$sql = "DELETE FROM users_following WHERE id_user_active = :id OR id_user_passive = :id";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id', $id_user);
+			$sql->execute();
+
+			$sql = "DELETE FROM users WHERE id_user = :id";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id', $id_user);
+			$sql->execute();
+
+			return '';
+
+		} else {
+			return 'Você não pode excluir outro usuário!';
+		}
+
+	}
+
 	public function getInfo($id_user) {
 
 		$array = array();

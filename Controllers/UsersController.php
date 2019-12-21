@@ -84,6 +84,8 @@ class UsersController extends Controller {
 						$array['error'] = $users->deleteUser($id);
 					}
 
+					$array['data'] = '';
+
 					break;
 				default:
 					$array['error'] = 'Invalid request '.$method.' method';
@@ -97,6 +99,49 @@ class UsersController extends Controller {
 
 		return $this->returnJson($array);
 	}
+
+	public function feed() {
+
+		$array = array('error' => '');
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+			$array['is_me'] = false;
+
+
+			if ($method == 'GET') {
+				
+				$offset = 0;
+
+				if (isset($data['offset']) && !empty($data['offset'])) {
+					$offset = intval($data ['offset']);
+				}
+
+				$per_page = 10;
+
+				if (isset($data['per_page']) && !empty($data['per_page'])) {
+					$per_page = intval( $data['per_page']);
+				}
+
+				$array['data'] = $users->getFeed($offset, $per_page);
+				
+			} else {
+				$array['error'] = 'Método indisponível';
+			}
+
+
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);
+	}	
 
 	public function new_record() {
 

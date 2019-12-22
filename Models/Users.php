@@ -147,7 +147,9 @@ class Users extends Model {
 
 		$followingUsers = $this->getFollowingIds($this->getId());
 
-		return $followingUsers;
+		$photos = new Photos();
+
+		return $photos->getFeedCollection($followingUsers, $offset, $per_page);
 
 	}
 

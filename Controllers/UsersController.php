@@ -3,6 +3,7 @@ namespace Controllers;
 
 use \Core\Controller;
 use \Models\Users;
+use \Models\Photos;
 
 class UsersController extends Controller {
 
@@ -41,7 +42,7 @@ class UsersController extends Controller {
 		$this->returnJson($array);
 	}
 
-	public function view($id) {
+	public function view($id_user) {
 
 		$array = array('error' => '');
 
@@ -55,14 +56,14 @@ class UsersController extends Controller {
 			$array['logged'] = true;
 			$array['is_me'] = false;
 
-			if ($id === $users->getId()) {
+			if ($id_user === $users->getId()) {
 				$array['is_me'] = true;
 			}
 
 			switch ($method) {
 				case 'GET':
 					
-					$array['data'] = $users->getInfo($id);
+					$array['data'] = $users->getInfo($id_user);
 
 					if (count($array['data']) === 0) {
 						$array['error'] = 'Usuário não encontrado!!!';
@@ -71,17 +72,17 @@ class UsersController extends Controller {
 					break;
 				case 'PUT':
 					
-					$array['error'] = $users->editInfo($id, $data);
+					$array['error'] = $users->editInfo($id_user, $data);
 
 					break;
 				case 'DELETE':
 
-					$array['data'] = $users->getInfo($id);
+					$array['data'] = $users->getInfo($id_user);
 
 					if (count($array['data']) === 0) {
 						$array['error'] = 'Usuário não encontrado!!!';
 					} else {
-						$array['error'] = $users->deleteUser($id);
+						$array['error'] = $users->deleteUser($id_user);
 					}
 
 					$array['data'] = '';
@@ -112,8 +113,6 @@ class UsersController extends Controller {
 		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
 			
 			$array['logged'] = true;
-			$array['is_me'] = false;
-
 
 			if ($method == 'GET') {
 				
@@ -130,6 +129,53 @@ class UsersController extends Controller {
 				}
 
 				$array['data'] = $users->getFeed($offset, $per_page);
+				
+			} else {
+				$array['error'] = 'Método indisponível';
+			}
+
+
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);
+	}
+
+	public function photos($id_user){
+
+		$array = array('error' => '');
+		$photos = new Photos();
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+			$array['is_me'] = false;
+
+			if ($id_user === $users->getId()) {
+				$array['is_me'] = true;
+			}
+
+			if ($method == 'GET') {
+				
+				$offset = 0;
+
+				if (isset($data['offset']) && !empty($data['offset'])) {
+					$offset = intval($data ['offset']);
+				}
+
+				$per_page = 10;
+
+				if (isset($data['per_page']) && !empty($data['per_page'])) {
+					$per_page = intval( $data['per_page']);
+				}
+
+				$array['data'] = $photos->getPhotos($id_user, $offset, $per_page);
 				
 			} else {
 				$array['error'] = 'Método indisponível';

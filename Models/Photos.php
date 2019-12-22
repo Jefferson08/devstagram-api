@@ -6,6 +6,29 @@ use \Core\Model;
 
 class Photos extends Model {
 
+	public function getPhotos($id_user, $offset, $per_page){
+
+		$array = array();
+
+		$sql = "SELECT * FROM photos WHERE id_user = :id ORDER BY id DESC LIMIT ".$offset." ,".$per_page;
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id', $id_user);
+		$sql->execute();
+
+		if ($sql->rowCount() > 0) {
+
+			$array = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+			foreach ($array as $key => $photo) {
+				$array[$key]['likes_count'] = $this->getLikesCount($photo['id']);
+				$array[$key]['comments'] = $this->getComments($photo['id']);
+				$array[$key]['url'] = BASE_URL.'media/photos/'.$photo['url'];
+			}
+		}
+
+		return $array;
+	}
+
 	public function getPhotosCount($id_user) {
 
 		$sql = "SELECT COUNT(*) AS c FROM photos WHERE id_user = :id";

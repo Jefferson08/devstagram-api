@@ -29,6 +29,32 @@ class Photos extends Model {
 		return $array;
 	}
 
+	public function getRamdomPhotos($per_page, $excludes) {
+
+		$array = array();
+
+		if (!empty($excludes)) {
+			
+			foreach ($excludes as $key => $value) {
+				$excludes[$key] = intval($value);
+			}
+
+			$sql = "SELECT * FROM photos WHERE id NOT IN (".implode(', ', $excludes).") ORDER BY rand() LIMIT ".$per_page;
+		} else {
+			$sql = "SELECT * FROM photos ORDER BY rand() LIMIT ".$per_page;
+		}
+
+		$sql = $this->db->query($sql);
+
+		if ($sql->rowCount() > 0) {
+			
+			$array = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+		}
+
+		return $array;
+	}
+
 	public function getPhotosCount($id_user) {
 
 		$sql = "SELECT COUNT(*) AS c FROM photos WHERE id_user = :id";

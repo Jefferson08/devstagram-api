@@ -228,4 +228,39 @@ class UsersController extends Controller {
 		return $this->returnJson($array);
 	}
 
+	public function follow($id_user) {
+
+		$array = array('error' => '');
+
+		$users = new Users();
+		
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+
+			if ($method == 'POST') {
+
+				if (!$users->follow($id_user)) {
+					$array['error'] = 'Não foi possível seguir este usuário';
+				} 
+				
+			} else if ($method == 'DELETE') {
+				
+				$users->unfollow($id_user);
+
+			} else {
+
+				$array['error'] = 'Método de requisição inválido';
+
+			}
+
+
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);		
+	}
+
 }

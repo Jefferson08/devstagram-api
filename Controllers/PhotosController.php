@@ -66,6 +66,7 @@ class PhotosController extends Controller {
 
 			} else if ($method == 'DELETE') {
 
+				$array['error'] = $photos->deletePhoto($id_photo, $users->getId());
 
 			} else {
 				$array['error'] = 'Invalid request '.$method.' method';

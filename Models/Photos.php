@@ -58,6 +58,38 @@ class Photos extends Model {
 
 	}
 
+	public function deletePhoto($id_photo, $id_user) {
+
+		$sql = "SELECT id FROM photos WHERE id = :id_photo AND id_user = :id_user";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id_user', $id_user);
+		$sql->bindValue(':id_photo', $id_photo);
+		$sql->execute();
+
+		if ($sql->rowCount() > 0) {
+			
+			$sql = "DELETE FROM photos WHERE id = :id_photo";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id_photo', $id_photo);
+			$sql->execute();
+
+			$sql = "DELETE FROM comments WHERE id_photo = :id_photo";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id_photo', $id_photo);
+			$sql->execute();
+
+			$sql = "DELETE FROM photos_likes WHERE id_photo = :id_photo";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id_photo', $id_photo);
+			$sql->execute();
+
+			return '';
+
+		} else {
+			return 'Esta foto não é sua ou não existe';
+		}
+	}
+
 	public function getRamdomPhotos($per_page, $excludes) {
 
 		$array = array();

@@ -45,6 +45,39 @@ class PhotosController extends Controller {
 
 		return $this->returnJson($array);
 	}
+
+	public function view($id_photo) {
+
+		$array = array('error' => '');
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+		$photos = new Photos();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+
+			if ($method == 'GET') {
+				
+				$array['data'] = $photos->getPhoto($id_photo);
+
+			} else if ($method == 'DELETE') {
+
+
+			} else {
+				$array['error'] = 'Invalid request '.$method.' method';
+			}
+					
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);
+
+	}
 }
 
 ?>

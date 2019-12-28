@@ -29,6 +29,35 @@ class Photos extends Model {
 		return $array;
 	}
 
+	public function getPhoto($id_photo) {
+
+		$array = array();
+
+		$users = new Users();
+
+		$sql = "SELECT * FROM photos WHERE id = :id_photo";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id_photo', $id_photo);
+		$sql->execute();
+
+		if ($sql->rowCount() > 0) {
+
+			$array = $sql->fetch(\PDO::FETCH_ASSOC);
+
+			$user_info = $users->getInfo($array['id_user']);
+
+			$array['name'] = $user_info['name'];
+			$array['avatar'] = $user_info['avatar'];
+			$array['likes_count'] = $this->getLikesCount($array['id']);
+			$array['comments'] = $this->getComments($array['id']);
+			$array['url'] = BASE_URL.'media/photos/'.$array['url'];
+	
+		}
+
+		return $array;
+
+	}
+
 	public function getRamdomPhotos($per_page, $excludes) {
 
 		$array = array();

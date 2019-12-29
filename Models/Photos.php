@@ -222,6 +222,41 @@ class Photos extends Model {
 
 	}
 
+	public function like($id_photo, $id_user) {
+
+		$sql = "SELECT * FROM photos_likes WHERE id_photo = :id AND id_user = :id_user";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id', $id_photo);
+		$sql->bindValue(':id_user', $id_user);
+		$sql->execute();
+
+		if ($sql->rowCount() == 0) {
+			
+			$sql = "INSERT INTO photos_likes (id_photo, id_user) VALUES (:id, :id_user)";
+			$sql = $this->db->prepare($sql);
+			$sql->bindValue(':id', $id_photo);
+			$sql->bindValue(':id_user', $id_user);
+			$sql->execute();
+
+			return '';
+
+		} else {
+			return 'Você já curtiu essa foto!!!';
+		}
+
+	}
+
+	public function unlike($id_photo, $id_user) {
+
+		$sql = "DELETE FROM photos_likes WHERE id_photo = :id AND id_user = :id_user";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id', $id_photo);
+		$sql->bindValue(':id_user', $id_user);
+		$sql->execute();
+
+		return '';
+	}
+
 	public function getLikesCount($id_photo){
 		$sql = "SELECT COUNT(*) AS c FROM photos_likes WHERE id_photo = :id";
 		$sql = $this->db->prepare($sql);

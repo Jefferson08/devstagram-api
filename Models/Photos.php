@@ -191,6 +191,37 @@ class Photos extends Model {
 		return '';
 	}
 
+	public function deleteComment($id_comment, $id_user) {
+
+		$sql = "SELECT id_photo, id_user FROM comments WHERE id = :id_comment";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id_comment', $id_comment);
+		$sql->execute();
+
+		if ($sql->rowCount() > 0) {
+			
+			$sql = $sql->fetch(\PDO::FETCH_ASSOC);
+
+			$photo = $this->getPhoto($sql['id_photo']);
+
+			if ($photo['id_user'] == $id_user || $sql['id_user'] == $id_user) {
+				
+				$sql = "DELETE FROM comments WHERE id = :id_comment";
+				$sql = $this->db->prepare($sql);
+				$sql->bindValue(':id_comment', $id_comment);
+				$sql->execute();
+
+				return '';
+
+			} else {
+				return 'Este comentário não é seu!!';
+			}
+		} else {
+			return 'Este comentário não existe!!!';
+		}
+
+	}
+
 	public function getLikesCount($id_photo){
 		$sql = "SELECT COUNT(*) AS c FROM photos_likes WHERE id_photo = :id";
 		$sql = $this->db->prepare($sql);

@@ -104,9 +104,33 @@ class PhotosController extends Controller {
 					$array['error'] = 'Comentário vazio!!';
 				}
 
-			} else if ($method == 'DELETE') {
+			} else {
+				$array['error'] = 'Invalid request '.$method.' method';
+			}
+					
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
 
-				$array['error'] = 'delete';
+		return $this->returnJson($array);
+	}
+
+	public function delete_comment($id_comment) {
+		$array = array('error' => '');
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+		$photos = new Photos();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+
+			if ($method == 'DELETE') {
+				
+				$array['error'] = $photos->deleteComment($id_comment, $users->getId());
 
 			} else {
 				$array['error'] = 'Invalid request '.$method.' method';

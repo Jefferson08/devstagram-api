@@ -178,6 +178,19 @@ class Photos extends Model {
 		return $array;
 	}
 
+	public function addComment($id_photo, $id_user, $txt) {
+
+		$sql = "INSERT INTO comments (id_user, id_photo, date_comment, txt_comment) VALUES (:id_user, :id_photo, now(), :txt)";
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':id_user', $id_user);
+		$sql->bindValue(':id_photo', $id_photo);
+		$sql->bindValue(':txt', $txt);
+
+		$sql->execute();
+
+		return '';
+	}
+
 	public function getLikesCount($id_photo){
 		$sql = "SELECT COUNT(*) AS c FROM photos_likes WHERE id_photo = :id";
 		$sql = $this->db->prepare($sql);

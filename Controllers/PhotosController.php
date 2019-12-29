@@ -79,6 +79,45 @@ class PhotosController extends Controller {
 		return $this->returnJson($array);
 
 	}
+
+	public function comment($id_photo) {
+
+		$array = array('error' => '');
+
+		$method = $this->getMethod();
+		$data = $this->getRequestData();
+
+		$users = new Users();
+		$photos = new Photos();
+
+		if (!empty($data['jwt']) && $users->validateJwt($data['jwt'])) {
+			
+			$array['logged'] = true;
+
+			if ($method == 'POST') {
+				
+				if (!empty($data['txt'])) {
+					
+					$array['error'] = $photos->addComment($id_photo, $users->getId(), $data['txt']);
+
+				} else {
+					$array['error'] = 'Comentário vazio!!';
+				}
+
+			} else if ($method == 'DELETE') {
+
+				$array['error'] = 'delete';
+
+			} else {
+				$array['error'] = 'Invalid request '.$method.' method';
+			}
+					
+		} else {
+			$array['error'] = 'Acesso negado!!!';
+		}
+
+		return $this->returnJson($array);
+	}
 }
 
 ?>
